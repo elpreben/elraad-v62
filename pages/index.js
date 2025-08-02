@@ -5,6 +5,8 @@ export default function Home() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [caseNumber, setCaseNumber] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResponse, setAiResponse] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,6 +38,35 @@ export default function Home() {
     setLoading(false);
   };
 
+  const handleAISubmit = async (e) => {
+    e.preventDefault();
+    setAiLoading(true);
+    setAiResponse("");
+
+    const problem = e.target.problem.value;
+
+    try {
+      const response = await fetch('/api/ai-response', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ problem }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setAiResponse(data.aiResponse);
+      } else {
+        setAiResponse("Det oppstod en feil. Prøv igjen.");
+      }
+    } catch (error) {
+      console.error('Feil ved AI-henting:', error);
+      setAiResponse("En uventet feil oppstod.");
+    }
+
+    setAiLoading(false);
+  };
+
   return (
     <Layout>
       <div className="bg-white shadow p-4 rounded-xl max-w-2xl w-full mt-4 text-gray-800">
@@ -52,11 +83,10 @@ export default function Home() {
             <div className="bg-gray-100 p-3 rounded-lg mb-4 text-sm">
               <h2 className="font-semibold mb-1">Slik fungerer det:</h2>
               <p>
-                <strong>Steg 1:</strong> Fyll ut skjemaet nedenfor og beskriv problemet ditt. Vår AI analyserer informasjonen og gir deg råd og veiledning med en gang.
+                <strong>Steg 1:</strong> Beskriv problemet i skjemaet og få et umiddelbart AI-svar.
               </p>
               <p>
                 <strong>Steg 2:</strong> Hvis problemet ikke blir løst, kan en av våre kvalifiserte fagpersoner – autorisert installatør og elektriker – ta kontakt.
-                Du får da profesjonell vurdering og eventuelt et prisestimat eller tilbud fra en lokal elektriker for å utbedre feilen.
               </p>
             </div>
 
@@ -94,9 +124,27 @@ export default function Home() {
                 placeholder="E-postadresse"
                 required
               />
+
+              {/* Knapp for AI-svar */}
+              <button
+                onClick={handleAISubmit}
+                type="button"
+                className="w-full bg-blue-500 text-white font-bold py-2 rounded-lg text-sm"
+              >
+                {aiLoading ? 'Henter AI-svar...' : 'Få AI-svar nå'}
+              </button>
+
+              {/* Vis AI-svar */}
+              {aiResponse && (
+                <div className="bg-gray-100 p-3 rounded text-sm mt-2">
+                  <h3 className="font-semibold mb-1">AI-svar:</h3>
+                  <p>{aiResponse}</p>
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-green-500 text-white font-bold py-2 rounded-lg text-sm"
+                className="w-full bg-gradient-to-r from-blue-600 to-green-500 text-white font-bold py-2 rounded-lg text-sm mt-2"
               >
                 {loading ? 'Sender...' : 'SEND INN'}
               </button>
