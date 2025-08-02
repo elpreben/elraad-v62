@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
-import { redis } from '../utils/upstashClient';
 
 export default function Admin() {
   const [cases, setCases] = useState([]);

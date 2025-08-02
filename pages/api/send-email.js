@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { redis } from "../../../utils/upstashClient";
+import { redis } from "../../utils/upstashClient";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -44,9 +44,9 @@ export default async function handler(req, res) {
     `;
 
     await transporter.sendMail({
-      from: \`"Elråd" <\${process.env.EMAIL_USER}>\`,
+      from: `"Elråd" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: \`Bekreftelse - Sak \${caseNumber}\`,
+      subject: `Bekreftelse - Sak ${caseNumber}`,
       html: htmlContent,
     });
 
