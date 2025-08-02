@@ -125,7 +125,6 @@ export default function Home() {
                 required
               />
 
-              {/* Knapp for AI-svar */}
               <button
                 onClick={handleAISubmit}
                 type="button"
@@ -134,7 +133,6 @@ export default function Home() {
                 {aiLoading ? 'Henter AI-svar...' : 'Få AI-svar nå'}
               </button>
 
-              {/* Vis AI-svar */}
               {aiResponse && (
                 <div className="bg-gray-100 p-3 rounded text-sm mt-2">
                   <h3 className="font-semibold mb-1">AI-svar:</h3>
